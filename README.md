@@ -1,1 +1,1 @@
-# guide-app
+# organizations-demo
