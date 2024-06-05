@@ -1,6 +1,17 @@
 <script>
-const LIMIT = 4;
+import SearchComponent from "./components/SearchComponent.vue";
+import ButtonComponent from "./components/ButtonComponent.vue";
+import TableComponent from "./components/TableComponent.vue";
+import NavigationComponent from "./components/NavigationComponent.vue";
+const LIMIT = 1;
+
 export default {
+  components: {
+    SearchComponent,
+    ButtonComponent,
+    TableComponent,
+    NavigationComponent,
+  },
   data() {
     return {
       modalShow: false,
@@ -83,6 +94,10 @@ export default {
       this.sortBy = key;
       this.sort();
     },
+    updatePage(newPage) {
+      const pageNumber = Math.min(Math.max(1, newPage), this.lastPage);
+      this.page = pageNumber;
+    },
   },
   computed: {
     filteredCompanies() {
@@ -114,67 +129,19 @@ export default {
 <template>
   <section class="app">
     <h1 class="app__title">Справочник организаций</h1>
-    <input
-      v-model="searchFilter"
-      @update:model-value="page = 1"
-      class="app__search"
-      type="search"
-      placeholder="Найти по ФИО..."
+    <SearchComponent v-model="searchFilter" />
+    <ButtonComponent @modal-opened="modalOpen" />
+    <TableComponent
+      :columns
+      :paginatedCompanies
+      @delete="deleteCompany"
+      @sort="sortItems"
+      :sortBy
+      :sortDir
     />
-    <button @click="modalOpen" class="app__add" type="button">
-      Добавить
-    </button>
-    <table class="app__table">
-      <tr>
-        <th v-for="{ key, title } in columns" :key="key">
-          <button @click="sortItems(key)" type="button">
-            {{ title }}
-            <template v-if="sortBy === key">
-              <template v-if="sortDir === 1">&uarr;</template>
-              <template v-else>&darr;</template>
-            </template>
-          </button>
-        </th>
-        <th>Номер телефона</th>
-        <th></th>
-      </tr>
-      <tr v-for="item in paginatedCompanies">
-        <td>{{ item.companyName }}</td>
-        <td>{{ item.directorName }}</td>
-        <td>{{ item.phoneNumber }}</td>
-        <td class="app__td-small">
-          <a @click="deleteCompany(item.id)" class="app__delete" href="#!">
-            <img src="../src/assets/delete.png" width="40" height="40">
-          </a>
-        </td>
-      </tr>
-    </table>
-    <div class="app__navigation">
-      <button @click="page = Math.max(page - 1, firstPage)"></button>
-      <span>Страница {{ page }}</span>
-      <button
-        @click="page = Math.min(page + 1, lastPage)"
-        class="btnInv"
-      ></button>
-    </div>
+    <NavigationComponent :currentPage="page" @update-page="updatePage" />
   </section>
-
-  <div class="modal" :class="{ 'modal--show': modalShow }">
-    <div class="modal__content">
-      <h2 class="modal__title">Добавить организацию</h2>
-      <form class="modal__form">
-        <input v-model="inputText" type="text" placeholder="Название" />
-        <input v-model="inputTel" type="tel" placeholder="Номер телефона" />
-        <input v-model="inputName" type="text" placeholder="ФИО директора" />
-        <div class="modal__controls">
-          <button @click="closeModal" type="button">Отмена</button>
-          <button @click="addNewCompany" :disabled="isDisabled" type="button">
-            ОК
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <ModalCompnent @close="closeModal" />
 </template>
 
 <style scoped>
