@@ -30,3 +30,10 @@
       placeholder="Найти по ФИО..."
     />
 </template>
+
+<style>
+.app__search {
+  width: 200px;
+  padding: 10px 20px;
+}
+</style>
