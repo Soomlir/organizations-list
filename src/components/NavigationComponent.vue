@@ -53,7 +53,7 @@ export default {
   width: 30px;
   height: 30px;
   background-size: cover;
-  background-image: url("@/assets/arrow.png");
+  background-image: url("/img/assets/arrow.png");
 }
 
 .app__navigation span {
