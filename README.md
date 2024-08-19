@@ -1,4 +1,4 @@
-# organizations-demo
+# organizations-list
 Тестовое - Справочник организаций
 
 Используемые технологии:
